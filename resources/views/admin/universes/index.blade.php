@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h1>Welcome</h1>
+        <div class="col-md-11">
+            <h1>Danh sách vũ trụ</h1>
             <table class="table table-hover ">
                 <a style="float: right" class="btn btn-info" href="{{route('universes.create')}}"><i class="fa-solid fa-plus"></i></a>
                 <thead class="text-center">
@@ -22,9 +22,9 @@
                             <td>{{ $universe->name }}</td>
                             <td>{{ $universe->description }}</td>
                             @if ($universe->status == 1)
-                                <td><a class="btn btn-success"><i class="fa-solid fa-check"></i></a></td>
+                                <td><form action="{{route('universes.changeStatus',$universe->id)}}" method="POST">@csrf()<button class="btn btn-success" type="submit"><i class="fa-solid fa-check"></i></button ></form></td>
                             @else
-                                <td><a class="btn btn-warning"><i class="fa-solid fa-x"></i></a></td>
+                                <td><form action="{{route('universes.changeStatus',$universe->id)}}" method="POST">@csrf()<button class="btn btn-warning" type="submit"><i class="fa-solid fa-x"></i></button ></form></td>
                             @endif
                             <td><a class="btn btn-primary"><i class="fa-solid fa-eye"></i></a></td>
                             <td><a class="btn btn-secondary" href="{{route('universes.edit',$universe->id)}}"><i class="fa-solid fa-pencil"></i></a></td>

@@ -2,12 +2,13 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <h1>Welcome</h1>
+        <div class="col-md-11">
+            <h1>Danh sách bộ</h1>
 
             {{-- {{var_dump($list_categories)}} --}}
             <table class="table table-hover ">
-                <a style="float: right" class="btn btn-info" href="{{route('categories.create')}}"><i class="fa-solid fa-plus"></i></a>
+                <a style="float: right" class="btn btn-info" href="{{ route('categories.create') }}"><i
+                        class="fa-solid fa-plus"></i></a>
                 <thead class="text-center">
                     <tr>
                         <th>ID</th>
@@ -24,16 +25,29 @@
                         <tr>
                             <td>{{ $category->id }}</td>
                             <td>{{ $category->name }}</td>
-                            <td>{{ $category->universe->name }}</td>
+                            <td>{{ $category->universe != null ? $category->universe->name : '' }}</td>
                             <td>{{ $category->description }}</td>
                             @if ($category->status == 1)
-                                <td><a class="btn btn-success"><i class="fa-solid fa-check"></i></a></td>
+                                <td>
+                                    <form action="{{ route('categories.changeStatus', $category->id) }}" method="POST">
+                                        @csrf()<button class="btn btn-success" type="submit"><i
+                                                class="fa-solid fa-check"></i></button></form>
+                                </td>
                             @else
-                                <td><a class="btn btn-warning"><i class="fa-solid fa-x"></i></a></td>
+                                <td>
+                                    <form action="{{ route('categories.changeStatus', $category->id) }}" method="POST">
+                                        @csrf()<button class="btn btn-warning" type="submit"><i
+                                                class="fa-solid fa-x"></i></button></form>
+                                </td>
                             @endif
                             <td><a class="btn btn-primary"><i class="fa-solid fa-eye"></i></a></td>
-                            <td><a class="btn btn-secondary" href="{{route('categories.edit',$category->id)}}"><i class="fa-solid fa-pencil"></i></a></td>
-                            <td><form action="{{route('categories.destroy',$category->id)}}" method="POST">@csrf() @method('DELETE')<button class="btn btn-danger" type="submit"><i class="fa-solid fa-trash"></i></button ></form></td>
+                            <td><a class="btn btn-secondary" href="{{ route('categories.edit', $category->id) }}"><i
+                                        class="fa-solid fa-pencil"></i></a></td>
+                            <td>
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
+                                    @csrf() @method('DELETE')<button class="btn btn-danger" type="submit"><i
+                                            class="fa-solid fa-trash"></i></button></form>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

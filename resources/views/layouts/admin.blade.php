@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'LOLSkin') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -23,7 +23,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand col-2" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -33,7 +33,19 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
+                        <li class="nav-item col-6 text-center h5">
+                            <a class="nav-link" href="{{ route('skins.index') }}">{{ __('Trang phục') }}</a>
+                        </li>
+                        <li class="nav-item col-6 text-center h5">
+                            <a class="nav-link" href="{{ route('champions.index') }}">{{ __('Tướng') }}</a>
+                        </li>
+                        <li class="nav-item col-6 text-center h5">
+                            <a class="nav-link" href="{{ route('types.index') }}">{{ __('Bậc') }}</a>
+                        </li>
+                        <li class="nav-item col-6 text-center h5">
+                            <a class="nav-link" href="{{ route('categories.index') }}">{{ __('Bộ') }}</a>
+                        </li>
+                        <li class="nav-item col-6 text-center h5">
                             <a class="nav-link" href="{{ route('universes.index') }}">{{ __('Vũ trụ') }}</a>
                         </li>
                     </ul>

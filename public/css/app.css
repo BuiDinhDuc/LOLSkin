@@ -10254,3 +10254,9 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+.img{
+    width: 100% !important;
+    height: auto !important;
+}
+

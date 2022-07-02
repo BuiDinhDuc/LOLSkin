@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <div class="container">
                 <h1>Tạo mới vũ trụ</h1>
 
@@ -16,16 +16,16 @@
                   </div>
                 @endif
                 <br />
-                <form class="col-md-6 " action="{{ route('universes.update',$universe->id) }}" method="POST">
+                <form class="col-md-6 " action="{{ route('types.update',$type->id) }}" method="POST">
                     @method('PUT')
                     @csrf()
                     <div class="form-group">
                         <label for="name">Tên vũ trụ</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{$universe->name}}">
+                        <input type="text" class="form-control" id="name" name="name" value="{{$type->name}}">
                     </div>
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea rows="5" class="form-control" id="description" name="description">{{$universe->description}}</textarea>
+                        <textarea rows="5" class="form-control" id="description" name="description">{{$type->description}}</textarea>
                     </div>
                     <br />
 

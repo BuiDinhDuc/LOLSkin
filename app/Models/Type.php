@@ -7,5 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {
+    protected $primaryKey = 'id';
     use HasFactory;
+    protected $table = 'types';
+
 }

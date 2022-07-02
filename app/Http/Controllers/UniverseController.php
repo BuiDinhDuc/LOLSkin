@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Universe;
 use Exception;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class UniverseController extends Controller
 {
@@ -19,17 +21,29 @@ class UniverseController extends Controller
         $page = $request->page ?? 1;
         $name = $request->name ?? '';
         $status = $request->status ?? '';
-        $list_universes = Universe::orderBy('id', 'desc')->paginate($limit);
 
-        if ($status) {
-            $list_universes->where('status', $status);
-        }
+        $key = md5(vsprintf('%s.%s.%s', [
+            'UniverseController',
+            'index',
+            $page,
+        ]));
 
-        if ($name) {
-            $list_universes->where('name', 'like', $name);
-        }
+        $list_universes = Cache::remember($key, 1, function () use ($limit, $status, $name) {
 
-        return view('admin.universes.index')->with(['list_universes' => $list_universes]);
+            $query = Universe::orderBy('id', 'desc')->paginate($limit);
+
+            if ($status) {
+                $query->where('status', $status);
+            }
+
+            if ($name) {
+                $query->where('name', 'like', $name);
+            }
+
+            return $query;
+        });
+
+        return view('admin.universes.index', ['list_universes' => $list_universes]);
     }
 
     /**
@@ -59,9 +73,7 @@ class UniverseController extends Controller
         } catch (Exception $e) {
             $msg = false;
         }
-
-
-        return view('admin.universes.create')->with(['msg' => $msg]);
+        return redirect()->route('universes.index');
     }
 
     /**
@@ -109,7 +121,7 @@ class UniverseController extends Controller
             $msg = false;
         }
 
-        return $this->edit($id);
+        return redirect()->route('universes.index');
     }
 
     /**
@@ -125,6 +137,17 @@ class UniverseController extends Controller
             $universe->delete();
         } catch (Exception $e) {
         }
-        return $this->index($request);
+        return redirect()->route('universes.index');
+    }
+
+    public function changeStatus($id)
+    {
+        try {
+            $universe = Universe::findOrFail($id);
+            $universe->status = !$universe->status;
+            $universe->save();
+        } catch (Exception $e) {
+        }
+        return redirect()->route('universes.index');
     }
 }

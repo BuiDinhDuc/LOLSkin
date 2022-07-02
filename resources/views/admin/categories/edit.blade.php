@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <div class="container">
-                <h1>Tạo mới vũ trụ</h1>
+                <h1>Cập nhật bộ</h1>
 
                 @if (isset($msg) && $msg == true)
                     <div class="alert alert-success" role="alert">
@@ -42,7 +42,7 @@
 
                     <div class="form-group">
                         <label for="description">Mô tả</label>
-                        <textarea class="form-control" id="description" name="description">{{ $category->name }}</textarea>
+                        <textarea class="form-control" id="description" name="description">{{ $category->description }}</textarea>
                     </div>
                     <br />
 

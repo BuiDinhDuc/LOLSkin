@@ -2,9 +2,9 @@
 
 @section('content')
     <div class="row justify-content-center">
-        <div class="col-md-10">
+        <div class="col-md-11">
             <div class="container">
-                <h1>Tạo mới vũ trụ</h1>
+                <h1>Tạo mới tướng</h1>
 
                 @if (isset($msg) && $msg == true)
                 <div class="alert alert-success" role="alert">
@@ -16,15 +16,19 @@
                   </div>
                 @endif
                 <br />
-                <form class="col-md-6 " action="{{ route('universes.store') }}" method="POST">
+                <form class="col-md-6 " action="{{ route('champions.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf()
                     <div class="form-group">
-                        <label for="name">Tên vũ trụ</label>
+                        <label for="name">Tên tướng</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
                     <div class="form-group">
-                        <label for="description">Mô tả</label>
-                        <textarea class="form-control" id="description" name="description"></textarea>
+                        <label for="price">Giá</label>
+                        <input class="form-control" id="price" name="price" type="number">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Hình ảnh</label>
+                        <input class="form-control" id="image" name="image" type="file" accept="image/*">
                     </div>
                     <br />
 

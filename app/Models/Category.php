@@ -13,4 +13,5 @@ class Category extends Model
     public function universe(){
         return $this->belongsTo(Universe::class);
     }
+    protected $table = 'categories';
 }
