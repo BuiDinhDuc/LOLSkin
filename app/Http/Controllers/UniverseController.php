@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Universe;
 use Exception;
 
@@ -149,5 +150,58 @@ class UniverseController extends Controller
         } catch (Exception $e) {
         }
         return redirect()->route('universes.index');
+    }
+
+    public function getListUniverses(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'UniverseController',
+            'getListUniverses',
+            $page,
+        ]));
+
+        $list_universes = Cache::remember($key, 1, function () use ($limit) {
+
+            $query = Universe::orderBy('name', 'asc')->paginate($limit);
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+
+        return view('user.universes.index', ['list_universes' => $list_universes]);
+    }
+
+    public function getListCategoriesOfUniverse(Request $request,$id)
+    {
+        $limit = $request->limit ?? 10;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'UniverseController',
+            'getListCategoriesOfUniverse',
+            $page,
+        ]));
+
+        $list_categories = Cache::remember($key, 1, function () use ($limit,$id) {
+
+            $query = Category::where('universe_id', $id)->orderBy('name', 'desc')->paginate($limit);
+
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+
+        return view('user.universes.detail', ['list_categories' => $list_categories]);
     }
 }

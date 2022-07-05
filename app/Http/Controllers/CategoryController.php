@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Skin;
 use App\Models\Universe;
 use Exception;
 use Illuminate\Http\Request;
@@ -105,5 +106,70 @@ class CategoryController extends Controller
         } catch (Exception $e) {
         }
         return redirect()->route('categories.index');
+    }
+
+    public function getListCategories(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'CategoryController',
+            'getListCategories',
+            $page,
+        ]));
+
+        $list_categories = Cache::remember($key, 1, function () use ($limit) {
+
+            $query = Category::orderBy('name', 'asc')->paginate($limit);
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+
+        return view('user.categories.index', ['list_categories' => $list_categories]);
+    }
+
+    public function getListSkinsOfCategory(Request $request,$id)
+    {
+        $limit = $request->limit ?? 12;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'CategoryController',
+            'getCategory',
+            $page,
+        ]));
+
+        $key1 = md5(vsprintf('%s.%s.%s', [
+            'CategoryController',
+            'getListSkinsOfCategory',
+            $page,
+        ]));
+
+        $category = Cache::remember($key1, 1, function () use ($id) {
+
+            $query = Category::findOrFail($id);
+
+            return $query;
+        });
+
+        $list_skins = Cache::remember($key, 1, function () use ($limit,$id) {
+
+            $query = Skin::where('category_id', $id)->orderBy('name', 'desc')->paginate($limit);
+
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+        return view('user.categories.detail') ->with(['list_skins' => $list_skins,'category' => $category]);
     }
 }

@@ -199,4 +199,39 @@ class SkinController extends Controller
 
         return redirect()->route('skins.index');
     }
+
+    public function getListSkins(Request $request)
+    {
+        $limit = $request->limit ?? 120;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'SkinController',
+            'getListSkins',
+            $page,
+        ]));
+
+        $list_skins = Cache::remember($key, 1, function () use ($limit) {
+
+            $query = Skin::where('status', 1)->orderBy('id', 'desc')->paginate($limit);
+
+            return $query;
+        });
+
+        return view('user.skins.index', ['list_skins' => $list_skins]);
+    }
+
+    public function getSkinDetail(Request $request, $id)
+    {
+        $key = md5(vsprintf('%s.%s', [
+            'SkinController',
+            'getSkinDetail'
+        ]));
+        $skin = Skin::find($id);
+
+
+        return view('user.skins.detail')->with(['skin' => $skin]);
+    }
 }

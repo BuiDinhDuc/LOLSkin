@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Skin;
 use App\Models\Type;
 use Exception;
 use Illuminate\Http\Request;
@@ -144,5 +145,70 @@ class TypeController extends Controller
         } catch (Exception $e) {
         }
         return redirect()->route('types.index');
+    }
+
+    public function getListTypes(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'TypeController',
+            'getListTypes',
+            $page,
+        ]));
+
+        $list_types = Cache::remember($key, 1, function () use ($limit) {
+
+            $query = Type::orderBy('name', 'asc')->paginate($limit);
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+
+        return view('user.types.index', ['list_types' => $list_types]);
+    }
+
+    public function getListSkinsOfType(Request $request,$id)
+    {
+        $limit = $request->limit ?? 12;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'TypeController',
+            'getType',
+            $page,
+        ]));
+
+        $key1 = md5(vsprintf('%s.%s.%s', [
+            'TypeController',
+            'getListSkinsOfType',
+            $page,
+        ]));
+
+        $type = Cache::remember($key1, 1, function () use ($id) {
+
+            $query = Type::findOrFail($id);
+
+            return $query;
+        });
+
+        $list_skins = Cache::remember($key, 1, function () use ($limit,$id) {
+
+            $query = Skin::where('type_id', $id)->orderBy('name', 'desc')->paginate($limit);
+
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+        return view('user.types.detail') ->with(['list_skins' => $list_skins,'type' => $type]);
     }
 }

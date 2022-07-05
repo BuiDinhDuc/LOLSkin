@@ -17,6 +17,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/universes',[App\Http\Controllers\UniverseController::class,'getListUniverses'])->name('user.universes.index');
+Route::get('/universes/{id}',[App\Http\Controllers\UniverseController::class,'getListCategoriesOfUniverse'])->name('user.universes.detail');
+Route::get('/categories',[App\Http\Controllers\CategoryController::class,'getListCategories'])->name('user.categories.index');
+Route::get('/categories/{id}',[App\Http\Controllers\CategoryController::class,'getListSkinsOfCategory'])->name('user.categories.detail');
+Route::get('/types',[App\Http\Controllers\TypeController::class,'getListTypes'])->name('user.types.index');
+Route::get('/types/{id}',[App\Http\Controllers\TypeController::class,'getListSkinsOfType'])->name('user.types.detail');
+Route::get('/champion',[App\Http\Controllers\ChampionController::class,'getListChampions'])->name('user.champions.index');
+Route::get('/champion/{id}',[App\Http\Controllers\ChampionController::class,'getListSkinsOfChampion'])->name('user.champions.detail');
+Route::get('/skin',[App\Http\Controllers\SkinController::class,'getListSkins'])->name('user.skins.index');
+Route::get('/skin/{id}',[App\Http\Controllers\SkinController::class,'getSkinDetail'])->name('user.skins.detail');
+
 Auth::routes();
 
 
@@ -34,4 +45,6 @@ Route::prefix('admin')->group(function(){
     Route::post('/skins/changeStatus/{id}',[App\Http\Controllers\SkinController::class,'changeStatus'])->name('skins.changeStatus')->middleware('auth');
 
 }
+
+
 );

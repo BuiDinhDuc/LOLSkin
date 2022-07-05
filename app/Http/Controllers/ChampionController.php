@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Champion;
+use App\Models\Skin;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -161,5 +162,67 @@ class ChampionController extends Controller
         } catch (Exception $e) {
         }
         return redirect()->route('champions.index');
+    }
+
+    public function getListChampions(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'ChampionController',
+            'getListChampions',
+            $page,
+        ]));
+
+        $list_champions = Cache::remember($key, 1, function () {
+
+            $query = Champion::where('status', 1)->orderBy('name', 'asc')->get();
+
+            return $query;
+        });
+
+        return view('user.champions.index', ['list_champions' => $list_champions]);
+    }
+
+    public function getListSkinsOfChampion(Request $request,$id)
+    {
+        $limit = $request->limit ?? 12;
+        $page = $request->page ?? 1;
+        $name = $request->name ?? '';
+        $status = $request->status ?? '';
+
+        $key = md5(vsprintf('%s.%s.%s', [
+            'ChampionController',
+            'getChampion',
+            $page,
+        ]));
+
+        $key1 = md5(vsprintf('%s.%s.%s', [
+            'ChampionController',
+            'getListSkinsOfChampion',
+            $page,
+        ]));
+
+        $champion = Cache::remember($key1, 1, function () use ($id) {
+
+            $query = Champion::findOrFail($id);
+
+            return $query;
+        });
+
+        $list_skins = Cache::remember($key, 1, function () use ($limit,$id) {
+
+            $query = Skin::where('champion_id', $id)->orderBy('name', 'desc')->paginate($limit);
+
+            $query->where('status', 1);
+            // if ($name) {
+            //     $query->where('name', 'like', $name);
+            // }
+            return $query;
+        });
+        return view('user.champions.detail') ->with(['list_skins' => $list_skins,'champion' => $champion]);
     }
 }
